@@ -59,7 +59,7 @@ class Client
         if (file_exists($this->getCacheFilePath($endpoint))) {
             $fileContents = unserialize(file_get_contents($this->getCacheFilePath($endpoint)));
 
-            if (time() - $fileContents['createDate'] > 60 * 6) {
+            if (time() - $fileContents['createDate'] > 60 * 60 * 6) {
                 unlink($this->getCacheFilePath($endpoint));
                 return null;
             }
