@@ -4,67 +4,69 @@ require __DIR__ . '/vendor/autoload.php';
 const ROOT_DIR = __DIR__;
 
 $blueApron = new \BlueApron\Client();
-
 $recipes = $blueApron->getWeeklyMenu();
+
+$titles = [];
+foreach ($recipes as $recipe) {
+    $titles[] = $recipe->title;
+}
+
+$ingredients = $blueApron->getListOfIngredientsFromRecipes($titles);
+
 ?>
 
-<link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<html>
+    <head>
+        <title>Weekly Recipes</title>
 
-<style>
-    body {
-        font-family: 'Open Sans', sans-serif;
-    }
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
-    img:hover {
-        outline: 4px solid rgba(50, 100, 200, 0.3);
-    }
+        <link rel="stylesheet" type="text/css" href="/content/css/main.css?<?=time()?>" />
 
-    .main_body {
-        position: relative;
-        left: 50%;
-        margin-left: -700px;
-        width: 1400px;
-    }
+        <script src="/content/js/jquery-1.12.0.min.js"></script>
+    </head>
+    <body>
+        <div class="recipe_thumbs">
+            <?php foreach ($recipes as $i => $recipe): ?>
+                <div class="recipe_card">
+                    <div class="recipe_thumb_preview">
+                        <img width="250px" src="<?=$recipe->previewImage?>" />
 
-    .recipe_card {
-        position: relative;
-        width: 380px;
-        margin: 30px;
-        width: auto;
-        float: left;
-        height: 350px;
-    }
+                        <div class="checkbox_container">
+                            <input type="checkbox" name="checkbox_<?=$i?>" id="checkbox_<?=$i?>" class="css-checkbox"
+                                value="<?=$recipe->title?>"
+                            >
+                            <label for="checkbox_<?=$i?>" class="css-label"></label>
+                        </div>
+                    </div>
 
-    .main_title {
-        position: relative;
-        top: 0;
-        left: 0;
-        width: 350px;
-        font-size: 24px;
-        font-weight: bold;
-        overflow-wrap: break-word;
-    }
+                    <div class="cook_time"><?=$recipe->minCookTime?> - <?=$recipe->maxCookTime?></div>
 
-    .sub_title {
-        position: relative;
-        top: 0;
-        left: 0;
-        width: 350px;
-        color: #aaa;
-        overflow-wrap: break-word;
-    }
-</style>
+                    <div class="main_title">
+                        <a href="<?=$recipe->linkPath?>" target="_new">
+                            <?=$recipe->previewTitle?>
+                        </a>
+                    </div>
 
-<div class="main_body">
-    <?php foreach ($recipes as $recipe): ?>
-        <div class="recipe_card">
-            <a href="<?=$recipe->linkPath?>" target="_new">
-                <img width="370px" src="<?=$recipe->previewImage?>" />
-            </a>
-
-            <div class="main_title"><?=$recipe->previewTitle?></div>
-
-            <div class="sub_title"><?=$recipe->previewSubTitle?></div>
+                    <div class="sub_title"><?=$recipe->previewSubTitle?></div>
+                </div>
+            <?php endforeach; ?>
         </div>
-    <?php endforeach; ?>
-</div>
+
+        <div class="ingredient_list">&nbsp;</div>
+
+        <script>
+            $('.css-checkbox').click(function() {
+                var titles = [];
+
+                $('.css-checkbox:checkbox:checked').each(function(index) {
+                    titles.push($(this).val());
+                });
+
+                $.post("ingredient_list.php", {ingredients: titles}, function(data) {
+                    $('.ingredient_list').html(data);
+                });
+            });
+        </script>
+    </body>
+</html>

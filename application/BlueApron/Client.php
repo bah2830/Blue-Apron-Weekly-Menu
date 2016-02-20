@@ -31,6 +31,28 @@ class Client
         return $recipes;
     }
 
+    public function getRecipeFromWeek($name)
+    {
+        $response = $this->sendRequest("/api/recipes/on_the_menu");
+
+        foreach ($response->two_person_plan->recipes as $recipe) {
+            if ($recipe->recipe->title == $name) {
+                return new Recipe($recipe->recipe);
+            }
+        }
+    }
+
+    public function getListOfIngredientsFromRecipes($recipes = [])
+    {
+        $ingredients = [];
+        foreach ($recipes as $recipeTitle) {
+            $recipeIngredients = $this->getRecipeFromWeek($recipeTitle)->ingredients;
+            $ingredients = array_merge($ingredients, $recipeIngredients);
+        }
+
+        return Ingredient::combine($ingredients);
+    }
+
     private function sendRequest($endpoint, $jsonEncode = true)
     {
         $response = $this->getCachedResponse($endpoint);
