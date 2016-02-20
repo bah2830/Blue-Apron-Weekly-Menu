@@ -4,6 +4,8 @@ namespace BlueApron;
 class Recipe
 {
     public $title;
+    public $previewTitle;
+    public $previewSubTitle;
     public $description;
     public $linkPath;
     public $minCookTime;
@@ -18,6 +20,8 @@ class Recipe
     public function __construct($recipe)
     {
         $this->title = $recipe->title;
+        $this->previewTitle = $recipe->main_title;
+        $this->previewSubTitle = $recipe->sub_title;
         $this->linkPath = 'https://www.blueapron.com' . $recipe->location;
         $this->description = $recipe->description;
         $this->previewImage = 'http:' . $recipe->high_menu_thumb_url;
