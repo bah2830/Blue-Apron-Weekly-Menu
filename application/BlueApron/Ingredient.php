@@ -48,7 +48,7 @@ class Ingredient
             $wholeNumber = trim(str_replace($match['fraction'], '', $number));
 
             $numbers = split('/', $match['fraction']);
-            $number = round($wholeNumber . ($numbers[0] / $numbers[1]), 2);
+            $number = round($wholeNumber + ($numbers[0] / $numbers[1]), 2);
         }
 
         $newQuantity->number = $number;
