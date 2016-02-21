@@ -16,6 +16,7 @@ class Recipe
     public $ingredients;
     public $tags;
     public $instructions;
+    public $servings;
 
     public function __construct($recipe)
     {
@@ -29,6 +30,7 @@ class Recipe
         $this->ingredientsImage = 'http:' . $recipe->ingredient_image_url;
         $this->minCookTime = $recipe->min_cook_time;
         $this->maxCookTime = $recipe->max_cook_time;
+        $this->servings = $recipe->servings;
 
         $this->ingredients = [];
         foreach ($recipe->ingredients as $ingredient) {

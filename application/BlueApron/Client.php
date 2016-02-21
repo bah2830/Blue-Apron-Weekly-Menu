@@ -28,6 +28,10 @@ class Client
             $recipes[] = new Recipe($recipe->recipe);
         }
 
+        foreach ($response->family_plan->recipes as $recipe) {
+            $recipes[] = new Recipe($recipe->recipe);
+        }
+
         return $recipes;
     }
 
@@ -40,10 +44,17 @@ class Client
                 return new Recipe($recipe->recipe);
             }
         }
+
+        foreach ($response->family_plan->recipes as $recipe) {
+            if ($recipe->recipe->title == $name) {
+                return new Recipe($recipe->recipe);
+            }
+        }
     }
 
     public function getListOfIngredientsFromRecipes($recipes = [])
     {
+
         $ingredients = [];
         foreach ($recipes as $recipeTitle) {
             $recipeIngredients = $this->getRecipeFromWeek($recipeTitle)->ingredients;

@@ -138,5 +138,15 @@
         user-select: none;
     }
 
+    .servings {
+        position: absolute;
+        top: 148px;
+        left: 0;
+        width: auto;
+        background-color: black;
+        font-size: 12px;
+        color: #ddd;
+        padding: 1px 5px 1px 5px;
+    }
 
 </style>

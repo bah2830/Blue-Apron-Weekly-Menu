@@ -42,6 +42,8 @@ $ingredients = $blueApron->getListOfIngredientsFromRecipes($titles);
 
                     <div class="cook_time"><?=$recipe->minCookTime?> - <?=$recipe->maxCookTime?></div>
 
+                    <div class="servings"><?=$recipe->servings?></div>
+
                     <div class="main_title">
                         <a href="<?=$recipe->linkPath?>" target="_new">
                             <?=$recipe->previewTitle?>
