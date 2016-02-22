@@ -23,6 +23,11 @@ $ingredients = $blueApron->getListOfIngredientsFromRecipes($titles);
         border-bottom: 1px solid #ccc;
         padding-top: 5px;
     }
+
+    .ingredient_delete {
+        color: #aa0000;
+        font-weight: bold;
+    }
 </style>
 
 <?php if (count($ingredients)): ?>
@@ -35,12 +40,24 @@ $ingredients = $blueApron->getListOfIngredientsFromRecipes($titles);
 
         <h3>Ingredients</h3>
         <table class='ingredient_list_table'>
-            <?php foreach ($ingredients as $ingredient): ?>
-                <tr>
+            <?php $count = 0; ?>
+            <?php foreach ($ingredients as $i => $ingredient): ?>
+                <tr id='ingredient_<?=$count?>'>
                     <td width='300px' valign='bottom'><?=$ingredient->name?></td>
                     <td valign='bottom' align='right'><?=$ingredient->quantity?></td>
+                    <td width="20px" valign='bottom' align='right'><a href='#' class='ingredient_delete' id='<?=$count?>'>X</a></td>
                 </tr>
+                <?php $count++; ?>
             <?php endforeach; ?>
         </table>
     </div>
 <?php endif; ?>
+
+<script>
+    $('.ingredient_delete').click(function() {
+        var id = $(this).attr('id');
+        var rowId = 'ingredient_' + id;
+
+        $('#' + rowId).remove();
+    });
+</script>
