@@ -21,7 +21,9 @@ $ingredients = $blueApron->getListOfIngredientsFromRecipes($titles);
 
         <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 
+
         <link rel="stylesheet" type="text/css" href="/content/css/main.css?<?=time()?>" />
+        <link rel="stylesheet" type="text/css" href="/content/css/print.css" media="print" />
 
         <script src="/content/js/jquery-1.12.0.min.js"></script>
     </head>

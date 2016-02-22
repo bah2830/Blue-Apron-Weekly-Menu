@@ -29,6 +29,11 @@ $ingredients = $blueApron->getListOfIngredientsFromRecipes($titles);
     <div class="ingredient_list_header">Shopping List</div>
 
     <div id="ingredient_list_content">
+        <?php foreach ($titles as $title): ?>
+            <?=$title?><br>
+        <?php endforeach; ?>
+
+        <h3>Ingredients</h3>
         <table class='ingredient_list_table'>
             <?php foreach ($ingredients as $ingredient): ?>
                 <tr>
