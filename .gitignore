@@ -1,4 +1,2 @@
-vendor/*
 .vagrant
 .DS_Store
-composer.phar

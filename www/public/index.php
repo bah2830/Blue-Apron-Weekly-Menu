@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 const ROOT_DIR = __DIR__;
 
@@ -12,7 +12,6 @@ foreach ($recipes as $recipe) {
 }
 
 $ingredients = $blueApron->getListOfIngredientsFromRecipes($titles);
-
 ?>
 
 <html>

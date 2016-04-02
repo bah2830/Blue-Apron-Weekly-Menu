@@ -71,8 +71,7 @@ class Client
             return $response;
         }
 
-        $response = shell_exec("curl {$this->apiBaseUrl}{$endpoint}");
-
+        $response = shell_exec("curl -k {$this->apiBaseUrl}{$endpoint}");
         if ($jsonEncode) {
             $response = json_decode($response);
             if (!is_object($response)) {
@@ -116,6 +115,6 @@ class Client
     private function getCacheFilePath($endpoint)
     {
         $cleanEndpoint = preg_replace('/^_/', '', str_replace('/', '_', $endpoint));
-        return ROOT_DIR . "/cache/{$cleanEndpoint}";
+        return "/cache/{$cleanEndpoint}";
     }
 }

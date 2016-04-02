@@ -47,7 +47,7 @@ class Ingredient
         if (preg_match('/(?P<fraction>\d+\/\d+)/', $number, $match)) {
             $wholeNumber = trim(str_replace($match['fraction'], '', $number));
 
-            $numbers = split('/', $match['fraction']);
+            $numbers = explode('/', $match['fraction']);
             $number = round($wholeNumber + ($numbers[0] / $numbers[1]), 2);
         }
 

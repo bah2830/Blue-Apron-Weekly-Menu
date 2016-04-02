@@ -25,9 +25,9 @@ class Recipe
         $this->previewSubTitle = $recipe->sub_title;
         $this->linkPath = 'https://www.blueapron.com' . $recipe->location;
         $this->description = $recipe->description;
-        $this->previewImage = 'http:' . $recipe->high_menu_thumb_url;
-        $this->image = 'http:' . $recipe->square_hi_res_image_url;
-        $this->ingredientsImage = 'http:' . $recipe->ingredient_image_url;
+        $this->previewImage = $recipe->high_menu_thumb_url;
+        $this->image = $recipe->square_hi_res_image_url;
+        $this->ingredientsImage = $recipe->ingredient_image_url;
         $this->minCookTime = $recipe->min_cook_time;
         $this->maxCookTime = $recipe->max_cook_time;
         $this->servings = $recipe->servings;
