@@ -1,7 +1,5 @@
 FROM php:7.0.4-apache
 
-RUN apt-get update && apt-get install curl -y
-
 COPY config/vhosts/*.conf /etc/apache2/sites-enabled/
 COPY config/apache2.conf /etc/apache2/apache2.conf
 COPY www /var/www/html
