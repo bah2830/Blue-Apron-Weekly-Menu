@@ -13,5 +13,5 @@ docker rm -f $APP_NAME
 
 echo "Running $APP_NAME container"
 docker run $RUN_FLAG --name $APP_NAME -h $APP_NAME \
-    -p 8000:80 -p 4431:443 \
+    -p 8000:80 \
     $APP_NAME
