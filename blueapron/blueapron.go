@@ -2,9 +2,12 @@ package blueapron
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/bah2830/Blue-Apron-Weekly-Menu/logger"
 )
+
+var menu WeeklyMenu
 
 // WeeklyMenu - List of recipes for each week
 type WeeklyMenu struct {
@@ -45,6 +48,30 @@ type Ingredient struct {
 	FullName string `json:"customer_facing_ingredient_name"`
 }
 
+// StartPoller will run a background process every 6 hours to keep the menu cache updated
+func StartPoller() {
+	logger.Log("Starting BlueApron API Poller")
+
+	ticker := time.NewTicker(time.Hour * 6)
+	go func() {
+		updateMenu()
+		for range ticker.C {
+			updateMenu()
+		}
+	}()
+}
+
+func updateMenu() {
+	logger.Log("Updating BlueApron menu cache")
+
+	menu = GetWeeklyMenu()
+}
+
+// GetMenu gets the private variable from memory
+func GetMenu() WeeklyMenu {
+	return menu
+}
+
 // GetWeeklyMenu - Returns list of all recipes for the week
 func GetWeeklyMenu() WeeklyMenu {
 	client := getClient()
@@ -59,5 +86,6 @@ func GetWeeklyMenu() WeeklyMenu {
 		logger.Error(err.Error())
 	}
 
+	logger.Log("Updated BlueApron menu cache.")
 	return menu
 }

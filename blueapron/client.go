@@ -26,7 +26,7 @@ func getClient() Client {
 
 func (c Client) sendRequest(endPoint string) ([]byte, error) {
 	url := fmt.Sprintf("%s%s", c.APIBaseURL, endPoint)
-	logger.Log(fmt.Sprintf("Sending request to %s\n", url))
+	logger.Log(fmt.Sprintf("Sending request to %s", url))
 
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{
