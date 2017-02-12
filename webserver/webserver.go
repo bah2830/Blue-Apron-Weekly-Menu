@@ -1,24 +1,29 @@
 package webserver
 
 import (
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
 
 	"github.com/bah2830/Blue-Apron-Weekly-Menu/blueapron"
 	"github.com/bah2830/Blue-Apron-Weekly-Menu/logger"
+	"github.com/bah2830/Blue-Apron-Weekly-Menu/utilities"
 )
 
-var templates = template.Must(template.ParseGlob("templates/*.html"))
-
-type page struct {
-	PageTitle string
-	Sections  []Section
+var funcMap = template.FuncMap{
+	"timestamp": utilities.GetUnixTimestamp,
 }
 
-type Section struct {
-	Name    string
-	Recipes [][]blueapron.Recipe
+var templates = template.Must(template.New("main").Funcs(funcMap).ParseGlob("templates/*.html"))
+
+type indexPage struct {
+	PageTitle string
+	Recipes   [][]blueapron.Recipe
+}
+
+type postBody struct {
+	Recipes []string `json:"recipes"`
 }
 
 // Start Webserver
@@ -26,6 +31,7 @@ func Start() {
 	logger.Log("Starting webserver...")
 
 	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/shoppingList", shoppingListHandler)
 
 	// Setup file server for html resources
 	fs := http.FileServer(http.Dir("content"))
@@ -38,33 +44,20 @@ func Start() {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	p := page{
+	p := indexPage{
 		PageTitle: "Blue Apron Menu",
 	}
 
 	menu := blueapron.GetMenu()
-	section := Section{
-		Name:    "Two Person Plan",
-		Recipes: splitIntoColumns(menu.TwoPersonPlan.Recipes, 4),
-	}
 
-	p.Sections = append(p.Sections, section)
+	var allRecipes []blueapron.Recipes
+	allRecipes = append(allRecipes, menu.TwoPersonPlan.Recipes...)
+	allRecipes = append(allRecipes, menu.FamilyPlan.Recipes...)
 
-	section = Section{
-		Name:    "Family Plan",
-		Recipes: splitIntoColumns(menu.FamilyPlan.Recipes, 4),
-	}
-
-	p.Sections = append(p.Sections, section)
-
-	templates.ExecuteTemplate(w, "index.html", p)
-}
-
-func splitIntoColumns(recipes []blueapron.Recipes, columns int) [][]blueapron.Recipe {
+	// Split recipes into groups of 4 for generating the html layout.
 	var chunkedData [][]blueapron.Recipe
 	var chunk []blueapron.Recipe
-
-	for i, recipe := range recipes {
+	for i, recipe := range allRecipes {
 		if i != 0 && i%4 == 0 {
 			chunkedData = append(chunkedData, chunk)
 			chunk = nil
@@ -73,7 +66,21 @@ func splitIntoColumns(recipes []blueapron.Recipes, columns int) [][]blueapron.Re
 		chunk = append(chunk, recipe.Recipe)
 	}
 
-	chunkedData = append(chunkedData, chunk)
+	p.Recipes = append(chunkedData, chunk)
 
-	return chunkedData
+	templates.ExecuteTemplate(w, "index.html", p)
+}
+
+func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
+	var requestBody postBody
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&requestBody)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+
+	defer r.Body.Close()
+	shoppingList := blueapron.GetShoppingList(requestBody.Recipes)
+
+	templates.ExecuteTemplate(w, "shoppingList.html", shoppingList)
 }

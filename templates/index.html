@@ -7,39 +7,16 @@
 
         <title>{{.PageTitle}}</title>
 
-        <link rel="stylesheet" href="/content/css/bootstrap.min.css">
+
+        <link rel="stylesheet" type="text/css" href="/content/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/content/css/main.css?{{timestamp}}">
+        <link rel="stylesheet" type="text/css" href="/content/css/print.css?{{timestamp}}" media="print" />
+        
+        <script src="/content/js/jquery-3.1.1.min.js"></script>
 
         <link rel="icon" type="image/png" sizes="32x32" href="/content/img/favicons/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="96x96" href="/content/img/favicons/favicon-96x96.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/content/img/favicons/favicon-16x16.png">
-
-        <style type="text/css">
-            .navbar {
-                border-radius: 0;
-            }
-
-            a {
-                text-decoration: none;
-                color: #000;
-            }
-
-            a:hover {
-                text-decoration: underline;
-            }
-
-            .main_title {
-                position: relative;
-                font-size: 20px;
-                overflow-wrap: break-word;
-            }
-
-            .sub_title {
-                position: relative;
-                color: #aaa;
-                font-stretch: 12px;
-                overflow-wrap: break-word;
-            }
-        </style>
     </head>
     <body>
         <nav class="navbar navbar-inverse">
@@ -49,30 +26,61 @@
         </nav>
 
         <div class="container">
-            {{range .Sections}}
+            {{range $i, $row := $.Recipes}}
                 <div class="row">
-                    <div class="col-md-12">
-                        <h3>{{.Name}}</h3>
-                    </div>
-                </div>
-                {{range .Recipes}}
-                    <div class="row">
-                        {{range .}}
-                            <div class="col-md-3">
-                                <img style="width:100%" src="{{.PreviewImage}}"/>
-                                <br>
-                                <div class="main_title">
-                                    <a href="https://www.blueapron.com{{.LinkPath}}" target="_new">
-                                        {{.PreviewTitle}}
-                                    </a>
+                    {{range $j, $recipe := $row}}
+                        <div class="col-md-3 recipe_card">
+                            <div class="thumbnail_container">
+                                <img style="width:100%" src="{{$recipe.PreviewImage}}"/>
+
+                                <div class="cook_time">{{$recipe.MinCookTime}} - {{$recipe.MaxCookTime}}</div>
+
+                                <div class="checkbox_container">
+                                    <input type="checkbox" 
+                                        name="checkbox_{{$i}}_{{$j}}" 
+                                        id="checkbox_{{$i}}_{{$j}}" 
+                                        class="css-checkbox" 
+                                        value="{{$recipe.Title}}"
+                                    >
+                                    <label for="checkbox_{{$i}}_{{$j}}" class="css-label"></label>
                                 </div>
-                                <div class="sub_title">{{.PreviewSubTitle}}</div>
-                                <br><br><br>
-                            </div>           
-                        {{end}}      
-                    </div>
-                {{end}}
+                            </div>
+                            <br>
+                            <div class="main_title">
+                                <a href="https://www.blueapron.com{{$recipe.LinkPath}}" target="_new">
+                                    {{$recipe.PreviewTitle}}
+                                </a>
+                            </div>
+                            <div class="sub_title">{{$recipe.PreviewSubTitle}}</div>
+                            <br><br><br>
+                        </div>           
+                    {{end}}      
+                </div>
             {{end}}
+
+            <div class="shopping_list">&nbsp;</div>
         </div>
+
+        <script>
+            $('.css-checkbox').click(function() {
+                var titles = [];
+
+                $('.css-checkbox:checkbox:checked').each(function(index) {
+                    titles.push($(this).val());
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/shoppingList",
+                    processData: false,
+                    contentType: 'application/json',
+                    data: JSON.stringify({"recipes": titles}),
+                    success: function(r) {
+                        $('.shopping_list').html(r);
+                        $('.shopping_list').show();
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
